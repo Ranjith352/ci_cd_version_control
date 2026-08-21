@@ -1,0 +1,84 @@
+{
+  "metadata": {
+    "extracted_at": "2026-08-20T10:00:00Z",
+    "city": "Coimbatore",
+    "coordinates": [11.0168, 76.9558],
+    "api_version": "v3",
+    "total_locations": 1,
+    "total_sensors": 2,
+    "total_measurements": 2,
+    "is_real_data": true
+  },
+  "locations": [
+    {
+      "id": 232402,
+      "name": "Coimbatore South Station",
+      "locality": "Coimbatore",
+      "country": {
+        "name": "India"
+      },
+      "coordinates": {
+        "latitude": 11.0168,
+        "longitude": 76.9558
+      }
+    }
+  ],
+  "sensors": [
+    {
+      "location_id": 232402,
+      "sensor_id": 1077717,
+      "sensor_name": "PM2.5 Sensor",
+      "parameter_id": 2,
+      "parameter_name": "pm25",
+      "parameter_units": "µg/m³",
+      "parameter_display_name": "PM2.5"
+    },
+    {
+      "location_id": 232402,
+      "sensor_id": 1077718,
+      "sensor_name": "NO2 Sensor",
+      "parameter_id": 3,
+      "parameter_name": "no2",
+      "parameter_units": "ppm",
+      "parameter_display_name": "NO2"
+    }
+  ],
+  "measurements": [
+    {
+      "measurement_id": 500001,
+      "location_id": 232402,
+      "location_name": "Coimbatore South Station",
+      "city": "Coimbatore",
+      "country": "India",
+      "sensor_id": 1077717,
+      "sensor_name": "PM2.5 Sensor",
+      "parameter_id": 2,
+      "parameter": "pm25",
+      "parameter_display_name": "PM2.5",
+      "value": 25.4,
+      "unit": "µg/m³",
+      "datetime_utc": "2026-08-20T10:00:00Z",
+      "datetime_local": "2026-08-20T15:30:00+05:30",
+      "latitude": 11.0168,
+      "longitude": 76.9558
+    },
+    {
+      "measurement_id": 500002,
+      "location_id": 232402,
+      "location_name": "Coimbatore South Station",
+      "city": "Coimbatore",
+      "country": "India",
+      "sensor_id": 1077718,
+      "sensor_name": "NO2 Sensor",
+      "parameter_id": 3,
+      "parameter": "no2",
+      "parameter_display_name": "NO2",
+      "value": 0.05,
+      "unit": "ppm",
+      "datetime_utc": "2026-08-20T10:00:00Z",
+      "datetime_local": "2026-08-20T15:30:00+05:30",
+      "latitude": 11.0168,
+      "longitude": 76.9558
+    }
+  ]
+}

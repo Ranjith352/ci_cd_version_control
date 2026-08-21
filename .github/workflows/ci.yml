@@ -1,0 +1,43 @@
+name: Environmental Intelligence Pipeline CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Run Pytest Suite
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Run Automated Pytest Suite
+        env:
+          OPENAQ_API_KEY: "test_mock_ci_key"
+        run: |
+          python -m pytest -v --junitxml=test-results.xml
+
+      - name: Upload Test Results Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pytest-results
+          path: test-results.xml

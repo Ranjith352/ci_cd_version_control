@@ -1,0 +1,100 @@
+{
+  "metadata": {
+    "extracted_at": "2026-08-20T10:00:00Z",
+    "api_url": "https://earthquake.usgs.gov/fdsnws/event/1/query",
+    "query_params": {
+      "format": "geojson",
+      "starttime": "2026-01-01",
+      "endtime": "2026-08-20",
+      "minmagnitude": 2.5,
+      "limit": 1000,
+      "orderby": "time"
+    },
+    "count": 2
+  },
+  "geojson": {
+    "type": "FeatureCollection",
+    "metadata": {
+      "generated": 1700000000000,
+      "url": "https://earthquake.usgs.gov/fdsnws/event/1/query",
+      "title": "USGS Earthquakes",
+      "status": 200,
+      "api": "1.14.0",
+      "count": 2
+    },
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {
+          "mag": 5.4,
+          "place": "14 km E of Hiroo, Japan",
+          "time": 1700000000000,
+          "updated": 1700000050000,
+          "tz": null,
+          "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000m123",
+          "detail": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/us7000m123.geojson",
+          "felt": 12,
+          "cdi": 4.1,
+          "mmi": 4.5,
+          "alert": "green",
+          "status": "reviewed",
+          "tsunami": 0,
+          "sig": 450,
+          "net": "us",
+          "code": "7000m123",
+          "ids": ",us7000m123,",
+          "sources": ",us,",
+          "types": ",origin,phase-data,",
+          "nst": 45,
+          "dmin": 1.2,
+          "rms": 0.8,
+          "gap": 35.0,
+          "magType": "mwb",
+          "type": "earthquake",
+          "title": "M 5.4 - 14 km E of Hiroo, Japan"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [143.42, 42.28, 35.2]
+        },
+        "id": "us7000m123"
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "mag": 3.2,
+          "place": "12 km W of Cobb, CA",
+          "time": 1700000100000,
+          "updated": 1700000150000,
+          "tz": null,
+          "url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc7000m124",
+          "detail": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/nc7000m124.geojson",
+          "felt": 5,
+          "cdi": 2.1,
+          "mmi": null,
+          "alert": null,
+          "status": "automatic",
+          "tsunami": 0,
+          "sig": 150,
+          "net": "nc",
+          "code": "7000m124",
+          "ids": ",nc7000m124,",
+          "sources": ",nc,",
+          "types": ",origin,phase-data,",
+          "nst": 20,
+          "dmin": 0.5,
+          "rms": 0.3,
+          "gap": 50.0,
+          "magType": "md",
+          "type": "earthquake",
+          "title": "M 3.2 - 12 km W of Cobb, CA"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-122.72, 38.82, 2.1]
+        },
+        "id": "nc7000m124"
+      }
+    ]
+  }
+}
