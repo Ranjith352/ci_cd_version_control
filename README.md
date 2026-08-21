@@ -153,7 +153,7 @@ Tests use deterministic fixtures and mocked external APIs (`unittest.mock`), ens
 ## 6. Continuous Integration & Git Branching Strategy
 
 ### CI Workflow (`.github/workflows/ci.yml`)
-The project utilizes GitHub Actions CI running on Python 3.12. The workflow automatically executes on every push to `main` or `develop` and on pull requests targeting `main`.
+The project utilizes GitHub Actions CI running on Python 3.12. The workflow automatically executes on every push to `main` or `develop` and on pull requests targeting `main`. It runs the 14-test deterministic suite and uploads JUnit XML test report artifacts (`test-results.xml`) for every build.
 
 ### Recommended Branching Strategy
 ```text
