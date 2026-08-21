@@ -17,6 +17,39 @@ An end-to-end Data Engineering and Orchestration Pipeline for **OpenAQ Air Quali
 
 ---
 
+## Phase 5 End-to-End Architecture Flow
+
+```text
+                         ┌───────────────┐
+                         │    React      │
+                         │   (later)     │
+                         └───────┬───────┘
+                                 │
+                                 ▼
+                         ┌───────────────┐
+                         │    FastAPI    │
+                         └───────┬───────┘
+                                 │
+             ┌───────────────────┼──────────────────┐
+             │                   │                  │
+             ▼                   ▼                  ▼
+       /api/trigger       /api/status/{id}   /api/visualization
+             │                   │                  │
+             ▼                   ▼                  ▼
+         Prefect              Prefect          PostgreSQL
+             │                                      │
+       ┌─────┴─────┐                                │
+       ▼           ▼                                │
+    OpenAQ        USGS                              │
+      ETL          ETL                              │
+       │           │                                │
+       └─────┬─────┘                                │
+             ▼                                      │
+         PostgreSQL ◄───────────────────────────────┘
+```
+
+---
+
 ## 1. Project Directory Structure
 
 ```text
