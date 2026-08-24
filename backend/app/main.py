@@ -9,7 +9,7 @@ if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
 from backend.app.config import ALLOWED_ORIGINS
-from backend.app.routers import health, trigger, status as status_router, visualization
+from backend.app.routers import health, trigger, status as status_router, visualization, live
 
 app = FastAPI(
     title="Environmental Intelligence Pipeline API",
@@ -33,6 +33,7 @@ app.include_router(health.router)
 app.include_router(trigger.router)
 app.include_router(status_router.router)
 app.include_router(visualization.router)
+app.include_router(live.router)
 
 
 @app.get("/", include_in_schema=False)

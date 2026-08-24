@@ -61,6 +61,16 @@ export const api = {
     apiClient.get('/api/visualization/earthquakes', { params }),
 
   getTrends: (params = {}) => apiClient.get('/api/analytics/trends', { params }),
+
+  // Real-time Kafka Streaming Layer Endpoints
+  getLiveAirQuality: (params = {}) => apiClient.get('/api/live/air-quality', { params }),
+  getLiveEarthquakes: (params = {}) => apiClient.get('/api/live/earthquakes', { params }),
+  getLiveHealth: () => apiClient.get('/api/live/health'),
+  getWebSocketUrl: () => {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const host = BASE_URL.replace(/^https?:\/\//, '');
+    return `${protocol}//${host}/api/live/ws`;
+  },
 };
 
 export default api;

@@ -13,6 +13,10 @@ vi.mock('../services/api', () => ({
     triggerOpenAQ: vi.fn(),
     triggerUSGS: vi.fn(),
     getFlowStatus: vi.fn(),
+    getLiveAirQuality: vi.fn(),
+    getLiveEarthquakes: vi.fn(),
+    getLiveHealth: vi.fn(),
+    getWebSocketUrl: vi.fn().mockReturnValue('ws://localhost:8000/api/live/ws'),
   },
 }));
 
