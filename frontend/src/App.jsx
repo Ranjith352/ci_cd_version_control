@@ -4,6 +4,7 @@ import Layout from './components/layout/Layout';
 import Dashboard from './pages/Dashboard';
 import AirQuality from './pages/AirQuality';
 import Earthquakes from './pages/Earthquakes';
+import LiveMonitoring from './pages/LiveMonitoring';
 
 export function App() {
   return (
@@ -18,9 +19,13 @@ export function App() {
         <Route path="/earthquakes" element={<Layout pageTitle="Earthquake Hazards Intelligence" />}>
           <Route index element={<Earthquakes />} />
         </Route>
+        <Route path="/live" element={<Layout pageTitle="Real-Time Live Streaming Monitoring" />}>
+          <Route index element={<LiveMonitoring />} />
+        </Route>
       </Routes>
     </Router>
   );
 }
+
 
 export default App;

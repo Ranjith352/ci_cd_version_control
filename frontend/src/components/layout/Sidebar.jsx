@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Wind, Activity, ShieldCheck } from 'lucide-react';
+import { LayoutDashboard, Wind, Activity, ShieldCheck, Radio } from 'lucide-react';
 
 export const Sidebar = () => {
   return (
@@ -25,14 +25,20 @@ export const Sidebar = () => {
           <Activity size={20} />
           <span>Earthquakes</span>
         </NavLink>
+
+        <NavLink to="/live" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+          <Radio size={20} />
+          <span>Live Monitoring</span>
+        </NavLink>
       </nav>
 
       <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid var(--border-color)', fontSize: '0.75rem', color: 'var(--text-subtle)' }}>
-        <div>FastAPI & Prefect Pipeline</div>
-        <div>v1.0.0 • Batch Dashboard</div>
+        <div>FastAPI, Prefect & Kafka</div>
+        <div>v1.0.0 • Batch & Real-Time</div>
       </div>
     </aside>
   );
 };
+
 
 export default Sidebar;
