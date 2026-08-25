@@ -2,7 +2,6 @@
 Kafka Real-Time Streaming Module for Environmental Intelligence Pipeline.
 """
 
-import sys
 import os
 
 __version__ = "1.0.0"

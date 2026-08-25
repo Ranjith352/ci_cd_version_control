@@ -3,9 +3,8 @@ FastAPI Real-Time API Router for Live Kafka/Redis Environmental Streaming Layer.
 """
 
 import asyncio
-import json
 import logging
-from typing import Any, Dict, List
+from typing import Any, Dict
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse
 

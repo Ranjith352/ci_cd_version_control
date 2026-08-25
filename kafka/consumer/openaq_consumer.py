@@ -6,11 +6,9 @@ in Redis, routes malformed records to DLQ 'air-quality-live-dlq', and commits of
 """
 
 import logging
-import os
-import sys
 import time
 from datetime import datetime, timezone
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from kafka.consumer.consumer_config import create_kafka_consumer
 from kafka.schemas.air_quality import validate_air_quality_message

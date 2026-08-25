@@ -1,7 +1,7 @@
 import unittest
 import pandas as pd
 from sqlalchemy import create_engine, text
-from etl.loading.load import initialize_schema, load_earthquakes_upsert, load_air_quality_upsert, load_locations_upsert
+from etl.loading.load import initialize_schema, load_earthquakes_upsert, load_air_quality_upsert
 
 
 class TestLoading(unittest.TestCase):

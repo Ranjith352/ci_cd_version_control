@@ -7,10 +7,9 @@ deduplicates in-memory by event_id, and publishes to 'earthquakes-live'.
 
 import logging
 import os
-import sys
 import time
 from datetime import datetime, timedelta, timezone
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, Optional, Set
 
 from etl.extraction.usgs_extract import USGSExtractor
 from kafka.producer.producer_config import create_kafka_producer

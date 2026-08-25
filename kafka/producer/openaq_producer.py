@@ -7,9 +7,8 @@ deduplicates in-memory by measurement_id, and publishes to 'air-quality-live'.
 
 import logging
 import os
-import sys
 import time
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, Optional, Set
 
 from etl.extraction.openaq_extract import OpenAQExtractor
 from kafka.producer.producer_config import create_kafka_producer

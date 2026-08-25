@@ -1,5 +1,4 @@
 import os
-import sys
 import logging
 import importlib.util
 from uuid import UUID

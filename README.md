@@ -1,6 +1,6 @@
 # Environmental Intelligence Pipeline
 
-An end-to-end Data Engineering, Real-Time Streaming, and Orchestration Platform for **OpenAQ Air Quality Data** and **USGS Earthquake Hazards Data**. The platform features modular data extraction, EPA AQI calculation, Richter magnitude bucketing, idempotent PostgreSQL schema loading, Prefect 3.x orchestration, FastAPI backend services, Kafka real-time event streaming, Redis real-time state storage, WebSocket live updates, React dashboards, and complete Docker Compose containerization.
+An end-to-end Data Engineering, Real-Time Streaming, Orchestration, and CI/CD Automation Platform for **OpenAQ Air Quality Data** and **USGS Earthquake Hazards Data**. The platform features modular data extraction, EPA AQI calculation, Richter magnitude bucketing, idempotent PostgreSQL schema loading, Prefect 3.x orchestration, FastAPI backend services, Kafka real-time event streaming, Redis real-time state storage, WebSocket live updates, React dashboards, Docker Compose containerization, and automated GitHub Actions CI/CD with GitHub Container Registry (GHCR) publishing.
 
 ---
 
@@ -16,21 +16,23 @@ An end-to-end Data Engineering, Real-Time Streaming, and Orchestration Platform 
 | **Phase 6** | React Batch Dashboard | ✅ Completed |
 | **Phase 7** | Kafka Real-Time Pipeline & Redis Store | ✅ Completed |
 | **Phase 8** | Dockerization & Containerized Execution | ✅ Completed |
-| **Phase 9** | CI/CD Automation & Release Pipeline | ⏳ Not started / next phase |
+| **Phase 9** | CI/CD Automation & GitHub Container Registry (GHCR) | ✅ Completed |
 
 ---
 
 ## Table of Contents
 1. [System Architecture](#1-system-architecture)
-2. [Project Directory Structure](#2-project-directory-structure)
-3. [Database Schema (PostgreSQL)](#3-database-schema-postgresql)
-4. [FastAPI Backend & WebSockets](#4-fastapi-backend--websockets)
-5. [Prefect 3.x Orchestration](#5-prefect-3x-orchestration)
-6. [Kafka Real-Time Streaming Layer](#6-kafka-real-time-streaming-layer)
-7. [React Batch & Live Dashboards](#7-react-batch--live-dashboards)
-8. [Docker Infrastructure (Phase 8)](#8-docker-infrastructure-phase-8)
-9. [Verification & Automated Test Suite](#9-verification--automated-test-suite)
-10. [Exploratory Data Analysis (EDA) Findings](#10-exploratory-data-analysis-eda-findings)
+2. [CI/CD & Release Pipeline Architecture (Phase 9)](#2-cicd--release-pipeline-architecture-phase-9)
+3. [Project Directory Structure](#3-project-directory-structure)
+4. [Database Schema (PostgreSQL)](#4-database-schema-postgresql)
+5. [FastAPI Backend & WebSockets](#5-fastapi-backend--websockets)
+6. [Prefect 3.x Orchestration](#6-prefect-3x-orchestration)
+7. [Kafka Real-Time Streaming Layer](#7-kafka-real-time-streaming-layer)
+8. [React Batch & Live Dashboards](#8-react-batch--live-dashboards)
+9. [Docker Infrastructure (Phase 8)](#9-docker-infrastructure-phase-8)
+10. [Continuous Integration & GitHub Container Registry (Phase 9)](#10-continuous-integration--github-container-registry-phase-9)
+11. [Verification & Automated Test Suite](#11-verification--automated-test-suite)
+12. [Exploratory Data Analysis (EDA) Findings](#12-exploratory-data-analysis-eda-findings)
 
 ---
 
@@ -83,14 +85,52 @@ OpenAQ v3 API / USGS API
 
 ---
 
-## 2. Project Directory Structure
+## 2. CI/CD & Release Pipeline Architecture (Phase 9)
+
+```text
+Developer
+   │
+   ▼
+feature/* branch
+   │
+   ▼
+Pull Request
+   │
+   ▼
+GitHub Actions CI (.github/workflows/ci.yml)
+   ├── Security Scan (Verify no .env or private secrets committed)
+   ├── Python Pytest & Ruff Quality (Pytest + JUnit XML + Coverage)
+   ├── Frontend Tests & Build (Vitest + Vite Production Build)
+   └── Docker Compose Validation (docker compose config & build)
+   │
+   ▼
+Merge into develop (Integration CI)
+   │
+   ▼
+Merge into main (Release Trigger)
+   │
+   ▼
+GitHub Actions Release Workflow (.github/workflows/release.yml)
+   ├── Full Automated Test Suite Validation
+   ├── Docker Buildx Setup & GHCR Authentication
+   └── Build & Push Multi-Service Production Images to GHCR
+        ├── ghcr.io/<owner>/environmental-intelligence-backend:latest / <sha>
+        ├── ghcr.io/<owner>/environmental-intelligence-frontend:latest / <sha>
+        ├── ghcr.io/<owner>/environmental-intelligence-producer:latest / <sha>
+        └── ghcr.io/<owner>/environmental-intelligence-consumer:latest / <sha>
+```
+
+---
+
+## 3. Project Directory Structure
 
 ```text
 Environmental-Intelligence-Pipeline/
 │
 ├── .github/
 │   └── workflows/
-│       └── ci.yml               # GitHub Actions CI workflow (Python 3.12 & Pytest)
+│       ├── ci.yml               # Automated CI workflow (Security, Pytest, Vitest, Docker config)
+│       └── release.yml          # Production release & GHCR image publishing workflow
 │
 ├── backend/
 │   ├── app/
@@ -165,7 +205,7 @@ Environmental-Intelligence-Pipeline/
 
 ---
 
-## 3. Database Schema (PostgreSQL)
+## 4. Database Schema (PostgreSQL)
 
 - **Database Engine**: PostgreSQL 15
 - **Production Database Name**: `data_engineering`
@@ -193,7 +233,7 @@ Environmental-Intelligence-Pipeline/
 
 ---
 
-## 4. FastAPI Backend & WebSockets
+## 5. FastAPI Backend & WebSockets
 
 ### Verified API Endpoints
 
@@ -212,7 +252,7 @@ Environmental-Intelligence-Pipeline/
 
 ---
 
-## 5. Prefect 3.x Orchestration
+## 6. Prefect 3.x Orchestration
 
 The pipeline uses Prefect 3.x flows for workflow orchestration:
 
@@ -225,7 +265,7 @@ Features include automated retries, error logging, parameter validation, and ide
 
 ---
 
-## 6. Kafka Real-Time Streaming Layer
+## 7. Kafka Real-Time Streaming Layer
 
 The real-time streaming pipeline continuously ingests environmental events:
 
@@ -239,7 +279,7 @@ The real-time streaming pipeline continuously ingests environmental events:
 
 ---
 
-## 7. React Batch & Live Dashboards
+## 8. React Batch & Live Dashboards
 
 The React frontend (`frontend/`) provides interactive data visualization:
 
@@ -248,7 +288,7 @@ The React frontend (`frontend/`) provides interactive data visualization:
 
 ---
 
-## 8. Docker Infrastructure (Phase 8)
+## 9. Docker Infrastructure (Phase 8)
 
 The application stack is containerized using Docker Compose (`docker-compose.yml`):
 
@@ -285,32 +325,92 @@ docker compose logs -f backend
 
 ---
 
-## 9. Verification & Automated Test Suite
+## 10. Continuous Integration & GitHub Container Registry (Phase 9)
+
+### 10.1 Branching Strategy & Workflow
+```text
+feature/* ──► Pull Request ──► develop (Integration) ──► Pull Request ──► main (Release)
+```
+- **`feature/*`**: Feature branches for isolated development.
+- **`develop`**: Integration branch for automated CI testing and verification.
+- **`main`**: Production release branch. Merges to `main` trigger automated container image compilation and publishing to GHCR.
+
+### 10.2 GitHub Actions Workflows
+
+1. **Continuous Integration (`.github/workflows/ci.yml`)**:
+   - Triggers: Pushes to `main`, `develop`, `feature/**`, and Pull Requests to `main`, `develop`.
+   - **Jobs**:
+     - `security-checks`: Validates that `.env` and sensitive credentials are not tracked in Git.
+     - `backend-tests`: Runs Ruff code quality checks and the automated Pytest suite, uploading JUnit XML and coverage reports as artifacts.
+     - `frontend-tests`: Executes Vitest component tests and builds the Vite production bundle.
+     - `docker-validation`: Verifies `docker compose config` syntax and builds service images.
+
+2. **Release & GHCR Publishing (`.github/workflows/release.yml`)**:
+   - Triggers: Pushes to `main`.
+   - **Jobs**:
+     - `test-and-validate`: Full regression test suite execution across backend, frontend, and Docker.
+     - `publish-ghcr`: Uses Docker Buildx and `GITHUB_TOKEN` authentication to build and publish container images to GitHub Container Registry (`ghcr.io`).
+
+### 10.3 GitHub Container Registry (GHCR) Images
+
+| Service Image | Registry Path | Tags |
+| :--- | :--- | :--- |
+| **Backend** | `ghcr.io/<owner>/environmental-intelligence-backend` | `latest`, `<sha>` |
+| **Frontend** | `ghcr.io/<owner>/environmental-intelligence-frontend` | `latest`, `<sha>` |
+| **Producer** | `ghcr.io/<owner>/environmental-intelligence-producer` | `latest`, `<sha>` |
+| **Consumer** | `ghcr.io/<owner>/environmental-intelligence-consumer` | `latest`, `<sha>` |
+
+### 10.4 Secret Management & Security Safeguards
+- `.env` files are strictly ignored via `.gitignore` and verified by CI security checks.
+- Mock API keys (`OPENAQ_API_KEY="test_mock_ci_key"`) are used during automated CI testing.
+- Production secrets must be stored securely in **GitHub Actions Secrets** (`Settings -> Secrets and variables -> Actions`).
+
+### 10.5 Pulling Images from GHCR
+
+```bash
+# Log in to GHCR (if required for private repos)
+echo $GITHUB_TOKEN | docker login ghcr.io -u <YOUR_GITHUB_USERNAME> --password-stdin
+
+# Pull published container images
+docker pull ghcr.io/<owner>/environmental-intelligence-backend:latest
+docker pull ghcr.io/<owner>/environmental-intelligence-frontend:latest
+docker pull ghcr.io/<owner>/environmental-intelligence-producer:latest
+docker pull ghcr.io/<owner>/environmental-intelligence-consumer:latest
+```
+
+---
+
+## 11. Verification & Automated Test Suite
 
 ### Verification Metrics
 
-- **Python Tests**: 42 passed (100% deterministic suite covering ETL, Prefect, FastAPI, and Kafka schema handlers)
-- **Frontend Tests**: 6 passed (Vitest & React Testing Library components suite)
+- **Python Tests**: 42 passed (100% deterministic suite with Pytest & Ruff quality checks)
+- **Frontend Tests**: 6 passed (Vitest & React Testing Library component suite)
 - **Frontend Build**: Vite production build succeeded (`dist/` bundle created)
 - **Docker Stack Validation**: `docker compose config` validated successfully
+- **CI/CD Verification**: GitHub Actions workflows (`ci.yml`, `release.yml`) created and verified
 
 ### Running Tests Locally
 
 ```powershell
-# Run Python backend & pipeline unit test suite
-.venv\Scripts\python.exe -m pytest -v
+# Run Python backend & pipeline unit test suite with coverage
+.venv\Scripts\python.exe -m pytest -v --cov=.
+
+# Run Ruff code quality check
+.venv\Scripts\ruff.exe check --select E9,F backend etl kafka prefect tests
 
 # Run React frontend component tests
 cd frontend
 npm test
 
 # Run React frontend production build
+cd frontend
 npm run build
 ```
 
 ---
 
-## 10. Exploratory Data Analysis (EDA) Findings
+## 12. Exploratory Data Analysis (EDA) Findings
 
 Summary of key EDA findings (see [`EDA_FINDINGS.md`](EDA_FINDINGS.md) for detailed reports):
 
