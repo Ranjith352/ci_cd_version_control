@@ -383,7 +383,7 @@ feature branch
     ↓
 Pull Request
     ↓
-GitHub Actions CI (16/16 PASS)
+GitHub Actions CI (All PASS)
     ↓
 Merge into develop
     ↓
@@ -391,3 +391,77 @@ Final validation
     ↓
 Merge into main
 ```
+
+---
+
+## 10. Docker Infrastructure & Containerized Execution (Phase 8)
+
+The entire environmental intelligence pipeline is fully containerized using Docker Compose.
+
+### Service Ports & Architecture
+
+| Service | Container Image | Host Port | Internal Port | Healthcheck |
+| :--- | :--- | :--- | :--- | :--- |
+| **postgres** | `postgres:15-alpine` | `5432` | `5432` | `pg_isready -U postgres -d data_engineering` |
+| **redis** | `redis:7-alpine` | `6379` | `6379` | `redis-cli ping` -> `PONG` |
+| **kafka** | `apache/kafka:latest` | `9092`, `9094` | `9092` | `kafka-broker-api-versions.sh --bootstrap-server localhost:9092` |
+| **kafka-topic-init** | `project-kafka-topic-init` | N/A | N/A | Exits `0` upon topic creation |
+| **prefect-server** | `prefecthq/prefect:3-python3.12` | `4200` | `4200` | `GET /api/health` -> `true` |
+| **backend** | `project-backend` | `8000` | `8000` | `GET /health` -> `HTTP 200` |
+| **kafka-producer** | `project-kafka-producer` | N/A | N/A | Daemon polling OpenAQ & USGS |
+| **kafka-consumer** | `project-kafka-consumer` | N/A | N/A | Daemon processing stream to Redis |
+| **frontend** | `project-frontend` | `80` | `80` | Nginx reverse proxy serving React app |
+
+### Environment Setup (`.env`)
+
+Copy `.env.example` to `.env`:
+```bash
+cp .env.example .env
+```
+Ensure your real OpenAQ API key is set in `.env`:
+```env
+OPENAQ_API_KEY=your_openaq_api_key_here
+POSTGRES_DB=data_engineering
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+```
+
+### Docker Commands
+
+#### 1. Validate Docker Configuration
+```powershell
+docker compose config
+```
+
+#### 2. Build Container Images
+```powershell
+docker compose build
+```
+
+#### 3. Start the Complete Stack
+```powershell
+docker compose up -d
+```
+
+#### 4. Monitor Services and Logs
+```powershell
+docker compose ps
+docker compose logs -f backend
+docker compose logs -f kafka-producer
+docker compose logs -f kafka-consumer
+```
+
+#### 5. Verify Redis Real-Time Data
+```powershell
+docker compose exec redis redis-cli ping
+docker compose exec redis redis-cli keys "*"
+```
+
+#### 6. Stop the Stack (Preserving Data Volumes)
+```powershell
+docker compose down
+```
+
+> [!NOTE]
+> Do NOT use `docker compose down -v` unless you explicitly intend to delete persisted PostgreSQL and Redis volume data.
+

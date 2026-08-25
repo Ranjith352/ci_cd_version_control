@@ -69,3 +69,21 @@ jobs:
         run: |
           cd frontend
           npm run build
+
+  docker-validation:
+    name: Validate Docker Config & Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Validate Docker Compose Configuration Syntax
+        run: |
+          docker compose config
+
+      - name: Build Docker Stack
+        env:
+          OPENAQ_API_KEY: "test_mock_ci_key"
+        run: |
+          docker compose build

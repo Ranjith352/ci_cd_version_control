@@ -68,6 +68,10 @@ export const api = {
   getLiveHealth: () => apiClient.get('/api/live/health'),
   getWebSocketUrl: () => {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    if (!BASE_URL) {
+      // Empty BASE_URL means we're behind a reverse proxy (e.g., Nginx in Docker)
+      return `${protocol}//${window.location.host}/api/live/ws`;
+    }
     const host = BASE_URL.replace(/^https?:\/\//, '');
     return `${protocol}//${host}/api/live/ws`;
   },

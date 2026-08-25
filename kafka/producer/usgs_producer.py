@@ -9,7 +9,7 @@ import logging
 import os
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional, Set
 
 from etl.extraction.usgs_extract import USGSExtractor
@@ -124,7 +124,7 @@ class USGSProducer:
 
         # Query recent events (past 1 hour / day)
         now_dt = datetime.now(timezone.utc)
-        start_date = now_dt.strftime("%Y-%m-%d")
+        start_date = (now_dt - timedelta(days=30)).strftime("%Y-%m-%d")
 
         try:
             raw_data = self.extractor.extract_earthquakes(

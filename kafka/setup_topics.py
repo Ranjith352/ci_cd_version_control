@@ -7,12 +7,9 @@ import logging
 import os
 import sys
 
-# Ensure root in sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-from kafka import KafkaAdminClient
-from kafka.admin import NewTopic
-from kafka.errors import TopicAlreadyExistsError
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 
 from kafka.utils.kafka_utils import (
     KAFKA_BOOTSTRAP_SERVERS,
@@ -20,7 +17,13 @@ from kafka.utils.kafka_utils import (
     TOPIC_AIR_QUALITY_DLQ,
     TOPIC_EARTHQUAKES,
     TOPIC_EARTHQUAKES_DLQ,
+    get_kafka_admin_client,
+    _import_tp_kafka_class,
 )
+
+KafkaAdminClient = get_kafka_admin_client
+NewTopic = _import_tp_kafka_class("admin").NewTopic
+TopicAlreadyExistsError = _import_tp_kafka_class("errors").TopicAlreadyExistsError
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)

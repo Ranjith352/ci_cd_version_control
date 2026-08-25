@@ -6,9 +6,11 @@ import logging
 import os
 from typing import Any, Dict
 
-from kafka import KafkaProducer
-
-from kafka.utils.kafka_utils import KAFKA_BOOTSTRAP_SERVERS, json_serializer
+from kafka.utils.kafka_utils import (
+    KAFKA_BOOTSTRAP_SERVERS,
+    get_kafka_producer,
+    json_serializer,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +29,7 @@ def get_producer_config() -> Dict[str, Any]:
     }
 
 
-def create_kafka_producer(config: Dict[str, Any] = None) -> KafkaProducer:
+def create_kafka_producer(config: Dict[str, Any] = None):
     """
     Instantiate KafkaProducer client.
 
@@ -36,7 +38,7 @@ def create_kafka_producer(config: Dict[str, Any] = None) -> KafkaProducer:
     """
     cfg = config or get_producer_config()
     try:
-        producer = KafkaProducer(**cfg)
+        producer = get_kafka_producer(**cfg)
         logger.info("KafkaProducer successfully initialized connecting to %s", cfg.get("bootstrap_servers"))
         return producer
     except Exception as e:
