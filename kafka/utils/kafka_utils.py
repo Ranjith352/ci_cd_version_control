@@ -7,6 +7,7 @@ import logging
 import os
 import sys
 import importlib
+import threading
 from typing import Any
 
 logger = logging.getLogger(__name__)
@@ -17,6 +18,9 @@ TOPIC_AIR_QUALITY = "air-quality-live"
 TOPIC_EARTHQUAKES = "earthquakes-live"
 TOPIC_AIR_QUALITY_DLQ = "air-quality-live-dlq"
 TOPIC_EARTHQUAKES_DLQ = "earthquakes-live-dlq"
+
+_tp_kafka_lock = threading.Lock()
+_tp_kafka_module = None
 
 
 def json_serializer(obj: Any) -> bytes:
@@ -31,27 +35,51 @@ def json_deserializer(bytes_data: bytes) -> Any:
     return json.loads(bytes_data.decode("utf-8"))
 
 
+def _get_third_party_kafka():
+    """Thread-safely import and cache the third-party kafka package from site-packages."""
+    global _tp_kafka_module
+    if _tp_kafka_module is not None:
+        return _tp_kafka_module
+
+    with _tp_kafka_lock:
+        if _tp_kafka_module is not None:
+            return _tp_kafka_module
+
+        _current_dir = os.path.normcase(os.path.abspath(os.path.dirname(__file__)))
+        _parent_dir = os.path.normcase(os.path.abspath(os.path.join(_current_dir, "../..")))
+
+        _old_sys_path = list(sys.path)
+        _clean_sys_path = [
+            p for p in sys.path
+            if os.path.normcase(os.path.abspath(p)) not in (_parent_dir, _current_dir, "")
+        ]
+
+        _saved_kafka_modules = {
+            k: v for k, v in sys.modules.items()
+            if k == "kafka" or k.startswith("kafka.")
+        }
+        for k in list(_saved_kafka_modules.keys()):
+            sys.modules.pop(k, None)
+
+        try:
+            sys.path = _clean_sys_path
+            tp_mod = importlib.import_module("kafka")
+            _tp_kafka_module = tp_mod
+        finally:
+            sys.path = _old_sys_path
+            # Restore project modules into sys.modules
+            sys.modules.update(_saved_kafka_modules)
+
+        return _tp_kafka_module
+
+
 def _import_tp_kafka_class(class_name: str, *args, **kwargs):
     """Instantiate third-party kafka class cleanly without module collision."""
-    _current_dir = os.path.normcase(os.path.abspath(os.path.dirname(__file__)))
-    _parent_dir = os.path.normcase(os.path.abspath(os.path.join(_current_dir, "../..")))
-    _sys_path_backup = list(sys.path)
-    _cached_kafka_modules = {k: v for k, v in sys.modules.items() if k == "kafka" or k.startswith("kafka.")}
-    for k in _cached_kafka_modules:
-        sys.modules.pop(k, None)
-    try:
-        sys.path = [p for p in sys.path if os.path.normcase(os.path.abspath(p)) not in (_parent_dir, _current_dir, "")]
-        tp_kafka = importlib.import_module("kafka")
-        cls = getattr(tp_kafka, class_name)
-        if args or kwargs:
-            return cls(*args, **kwargs)
-        return cls
-    finally:
-        sys.path = _sys_path_backup
-        for k in list(sys.modules.keys()):
-            if k == "kafka" or k.startswith("kafka."):
-                sys.modules.pop(k, None)
-        sys.modules.update(_cached_kafka_modules)
+    tp_kafka = _get_third_party_kafka()
+    cls = getattr(tp_kafka, class_name)
+    if args or kwargs:
+        return cls(*args, **kwargs)
+    return cls
 
 
 def get_kafka_producer(*args, **kwargs):
