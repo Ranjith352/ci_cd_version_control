@@ -1,4 +1,5 @@
 # Environmental Intelligence Pipeline
+CI/CD Pipeline Demonstration
 
 An end-to-end Data Engineering, Real-Time Streaming, Orchestration, and CI/CD Automation Platform for **OpenAQ Air Quality Data** and **USGS Earthquake Hazards Data**. The platform features modular data extraction, EPA AQI calculation, Richter magnitude bucketing, idempotent PostgreSQL schema loading, Prefect 3.x orchestration, FastAPI backend services, Kafka real-time event streaming, Redis real-time state storage, WebSocket live updates, React dashboards, Docker Compose containerization, and automated GitHub Actions CI/CD with GitHub Container Registry (GHCR) publishing.
 
