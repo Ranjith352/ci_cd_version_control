@@ -21,7 +21,7 @@ class AirQualityRepository:
         sql = text("""
             SELECT 
                 TO_CHAR(reading_timestamp, 'YYYY-MM-DD') AS reading_date,
-                ROUND(AVG(normalized_value)::numeric, 2) AS avg_concentration,
+                ROUND(CAST(AVG(normalized_value) AS NUMERIC), 2) AS avg_concentration,
                 MAX(aqi_us_epa) AS max_aqi
             FROM air_quality_readings
             WHERE LOWER(city) = LOWER(:city)
@@ -136,7 +136,7 @@ class EarthquakeRepository:
                 region,
                 COUNT(*) AS total_events,
                 MAX(magnitude) AS max_magnitude,
-                ROUND(AVG(depth_km)::numeric, 2) AS avg_depth_km,
+                ROUND(CAST(AVG(depth_km) AS NUMERIC), 2) AS avg_depth_km,
                 SUM(tsunami) AS tsunami_alerts
             FROM earthquake_events
             GROUP BY region
@@ -193,14 +193,14 @@ class AnalyticsRepository:
         """Fetch independent daily PM2.5 average concentration and daily earthquake counts."""
         sql = text("""
             WITH dates AS (
-                SELECT generate_series(
-                    COALESCE(:start_date::date, CURRENT_DATE - INTERVAL '30 days'),
-                    COALESCE(:end_date::date, CURRENT_DATE),
-                    '1 day'::interval
-                )::date AS d
+                SELECT CAST(generate_series(
+                    COALESCE(CAST(:start_date AS DATE), CURRENT_DATE - INTERVAL '30 days'),
+                    COALESCE(CAST(:end_date AS DATE), CURRENT_DATE),
+                    INTERVAL '1 day'
+                ) AS DATE) AS d
             ),
             aq AS (
-                SELECT DATE(reading_timestamp) AS d, ROUND(AVG(normalized_value)::numeric, 2) AS pm25_avg
+                SELECT DATE(reading_timestamp) AS d, ROUND(CAST(AVG(normalized_value) AS NUMERIC), 2) AS pm25_avg
                 FROM air_quality_readings
                 WHERE LOWER(parameter) IN ('pm25', 'pm2.5')
                 GROUP BY DATE(reading_timestamp)
@@ -211,7 +211,7 @@ class AnalyticsRepository:
                 GROUP BY DATE(event_time)
             )
             SELECT 
-                dates.d::text AS date,
+                CAST(dates.d AS TEXT) AS date,
                 aq.pm25_avg,
                 COALESCE(eq.eq_count, 0) AS earthquake_count
             FROM dates
