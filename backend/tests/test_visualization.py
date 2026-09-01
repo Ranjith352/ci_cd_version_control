@@ -115,7 +115,8 @@ def test_get_earthquake_visualization():
     assert data["events"][0]["magnitude_category"] == "Moderate"
 
 
-def test_get_analytics_trends():
+def test_get_analytics_trends_no_dates():
+    """Verify analytics trends endpoint functions with default date parameters (no dates specified)."""
     response = client.get("/api/analytics/trends")
     assert response.status_code == 200
     data = response.json()
@@ -123,3 +124,52 @@ def test_get_analytics_trends():
     assert data["trends"][0]["date"] == "2026-08-20"
     assert data["trends"][0]["pm25_avg"] == 22.4
     assert data["trends"][0]["earthquake_count"] == 5
+
+
+def test_get_analytics_trends_with_explicit_dates():
+    """Verify analytics trends endpoint functions with explicit start_date and end_date query parameters."""
+    response = client.get("/api/analytics/trends?start_date=2026-08-01&end_date=2026-08-25")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["total_days"] == 1
+    assert data["trends"][0]["date"] == "2026-08-20"
+    assert data["trends"][0]["pm25_avg"] == 22.4
+    assert data["trends"][0]["earthquake_count"] == 5
+
+
+def test_analytics_repository_query_parameters():
+    """Directly test AnalyticsRepository.get_independent_trends passes correct parameters and syntax."""
+    from backend.app.database.repository import AnalyticsRepository
+
+    mock_session = MagicMock()
+    mock_row = MagicMock()
+    mock_row.mappings.return_value.all.return_value = [
+        {"date": "2026-08-20", "pm25_avg": 18.5, "earthquake_count": 2}
+    ]
+    mock_session.execute.return_value = mock_row
+
+    # Test 1: with no dates
+    results_no_dates = AnalyticsRepository.get_independent_trends(mock_session, start_date=None, end_date=None)
+    assert len(results_no_dates) == 1
+    assert results_no_dates[0]["date"] == "2026-08-20"
+    assert results_no_dates[0]["pm25_avg"] == 18.5
+    assert results_no_dates[0]["earthquake_count"] == 2
+
+    call_args_no_dates = mock_session.execute.call_args
+    sql_text_no_dates = str(call_args_no_dates[0][0])
+    params_no_dates = call_args_no_dates[0][1]
+    assert "CAST(:start_date AS DATE)" in sql_text_no_dates
+    assert "CAST(:end_date AS DATE)" in sql_text_no_dates
+    assert params_no_dates == {"start_date": None, "end_date": None}
+
+    # Test 2: with explicit dates
+    results_with_dates = AnalyticsRepository.get_independent_trends(
+        mock_session, start_date="2026-08-01", end_date="2026-08-25"
+    )
+    assert len(results_with_dates) == 1
+    assert results_with_dates[0]["date"] == "2026-08-20"
+
+    call_args_with_dates = mock_session.execute.call_args
+    params_with_dates = call_args_with_dates[0][1]
+    assert params_with_dates == {"start_date": "2026-08-01", "end_date": "2026-08-25"}
+

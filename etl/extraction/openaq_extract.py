@@ -8,7 +8,7 @@ from typing import Dict, Any, Optional, List
 import requests
 from dotenv import load_dotenv
 
-# Ensure project root is in sys.path
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
 from config.config import (
